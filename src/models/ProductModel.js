@@ -1,4 +1,3 @@
-const timespan = require('jsonwebtoken/lib/timespan');
 const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema(
@@ -10,10 +9,13 @@ const productSchema = new mongoose.Schema(
         type: {type: String, required: true},
         hinhAnh: {type: String, required: true},
         rating: {type: Number, required: true},
-        description: {type: String, required: true}
+        description: {type: String, required: true},
+        discount: { type: Number },
+        mount: { type: Number },
+        selled: { type: Number }
     },
     {
-        timespan: true
+        timestamps: true
     }
 );
 

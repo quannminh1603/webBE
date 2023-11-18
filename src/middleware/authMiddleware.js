@@ -1,58 +1,49 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
-
 dotenv.config()
 
-const authMiddleware = (req, res, next) => {
-// verify a token symmetric
-    console.log('check token', req.headers.token)
+const authMiddleWare = (req, res, next) => {
     const token = req.headers.token.split(' ')[1]
-    jwt.verify(token, process.env.ACCESS_TOKEN, function(err, user) {
-        if(err) {
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
+        if (err) {
             return res.status(404).json({
-                message: "The authentication",
-                status: "ERR"
+                message: 'The authemtication',
+                status: 'ERROR'
             })
         }
-        const {payload} = user
-        if(payload?.role) {
-            console.log("true")
+        if (user?.role) {
             next()
         } else {
             return res.status(404).json({
-                message: "The authentication",
-                status: "ERR"
+                message: 'The authemtication',
+                status: 'ERROR'
             })
         }
     });
 }
 
-const authUserMiddleware = (req, res, next) => {
-    // verify a token symmetric
-        console.log('check token', req.headers.token)
-        const token = req.headers.token.split(' ')[1]
-        const userId = req.params.id
-        jwt.verify(token, process.env.ACCESS_TOKEN, function(err, user) {
-            if(err) {
-                return res.status(404).json({
-                    message: "The authentication",
-                    status: "ERR"
-                })
-            }
-            const {payload} = user
-            if(payload?.role || payload?.id === userId) {
-                console.log("true")
-                next()
-            } else {
-                return res.status(404).json({
-                    message: "The authentication",
-                    status: "ERR"
-                })
-            }
-        });
-    }
+const authUserMiddleWare = (req, res, next) => {
+    const token = req.headers.token.split(' ')[1]
+    const userId = req.params.id
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
+        if (err) {
+            return res.status(404).json({
+                message: 'The authemtication',
+                status: 'ERROR'
+            })
+        }
+        if (user?.role || user?.id === userId) {
+            next()
+        } else {
+            return res.status(404).json({
+                message: 'The authemtication',
+                status: 'ERROR'
+            })
+        }
+    });
+}
 
 module.exports = {
-    authMiddleware,
-    authUserMiddleware
+    authMiddleWare,
+    authUserMiddleWare
 }

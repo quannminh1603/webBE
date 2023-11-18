@@ -1,4 +1,3 @@
-const timespan = require('jsonwebtoken/lib/timespan');
 const mongoose = require('mongoose')
 const userSchema = new mongoose.Schema(
     {
@@ -16,7 +15,7 @@ const userSchema = new mongoose.Schema(
         updateAt: {type: Date}
     },
     {
-        timespan: true
+        timestamps: true
     }
 );
 
