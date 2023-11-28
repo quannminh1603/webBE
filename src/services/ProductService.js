@@ -201,6 +201,7 @@
 
 // test
 const Product = require("../models/ProductModel")
+const Category = require("../models/CategoryModel")
 
 const createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
@@ -217,8 +218,8 @@ const createProduct = (newProduct) => {
             }
             const newProduct = await Product.create({
                 name, 
-                image, 
-                type, 
+                image,
+                type: type,
                 countInStock: Number(countInStock), 
                 size: Number(size), 
                 price, 
@@ -305,9 +306,10 @@ const deleteManyProduct = (ids) => {
 const getDetailsProduct = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
+            // lấy ra tên danh mục trong đối tượng type
             const product = await Product.findOne({
                 _id: id
-            })
+            }).populate('type', 'ten')
             if (product === null) {
                 resolve({
                     status: 'ERR',
@@ -333,7 +335,10 @@ const getAllProduct = (limit, page, sort, filter) => {
             let allProduct = []
             if (filter) {
                 const label = filter[0];
-                const allObjectFilter = await Product.find({ [label]: { '$regex': filter[1] } }).limit(limit).skip(page * limit).sort({createdAt: -1, updatedAt: -1})
+                const allObjectFilter = await Product.find({ [label]: { '$regex': filter[1] } })
+                    .populate('type')
+                    .limit(limit).skip(page * limit)
+                    .sort({createdAt: -1, updatedAt: -1})
                 resolve({
                     status: 'OK',
                     message: 'Success',
@@ -346,7 +351,12 @@ const getAllProduct = (limit, page, sort, filter) => {
             if (sort) {
                 const objectSort = {}
                 objectSort[sort[1]] = sort[0]
-                const allProductSort = await Product.find().limit(limit).skip(page * limit).sort(objectSort).sort({createdAt: -1, updatedAt: -1})
+                const allProductSort = await Product.find()
+                    .populate('type')
+                    .limit(limit)
+                    .skip(page * limit)
+                    .sort(objectSort)
+                    .sort({createdAt: -1, updatedAt: -1})
                 resolve({
                     status: 'OK',
                     message: 'Success',
@@ -359,7 +369,11 @@ const getAllProduct = (limit, page, sort, filter) => {
             if(!limit) {
                 allProduct = await Product.find().sort({createdAt: -1, updatedAt: -1})
             }else {
-                allProduct = await Product.find().limit(limit).skip(page * limit).sort({createdAt: -1, updatedAt: -1})
+                allProduct = await Product.find()
+                    .populate('type')
+                    .limit(limit)
+                    .skip(page * limit)
+                    .sort({createdAt: -1, updatedAt: -1})
             }
             resolve({
                 status: 'OK',
@@ -378,7 +392,7 @@ const getAllProduct = (limit, page, sort, filter) => {
 const getAllType = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allType = await Product.distinct('type')
+            const allType = await Category.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
