@@ -65,7 +65,6 @@ const deleteCategory = (id) => {
             const checkCategory = await Category.findOne({
                 _id: id
             });
-            //    console.log('checkCategory', checkCategory)
             if(checkCategory === null) {
                 resolve({
                     status: "OK",
@@ -73,10 +72,9 @@ const deleteCategory = (id) => {
                 });
             }
             const deleteCategory = await Category.findByIdAndDelete(id);
-            console.log('deleteCategory', deleteCategory);
             resolve({
                 status: "OK",
-                message: "SUCCESS",
+                message: "Xóa thành công",
                 data: deleteCategory
             });
         }
