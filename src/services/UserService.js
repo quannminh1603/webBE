@@ -212,23 +212,34 @@ const { genneralAccessToken, genneralRefreshToken } = require("./JwtService")
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, confirmPassword, phone } = newUser
+        const { name, email, password, confirmPassword, phone, address } = newUser
+        // const { name, email, password, confirmPassword, phone, diaChi } = newUser
         try {
             const checkUser = await User.findOne({
                 email: email
             })
+            // const checkPhone = await User.findOne({
+            //     phone: phone
+            // })
             if (checkUser !== null) {
                 resolve({
                     status: 'ERR',
-                    message: 'The email is already'
+                    message: 'Địa chỉ email đã được đăng ký!'
                 })
             }
+            // if (checkPhone !== null) {
+            //     resolve({
+            //         status: 'ERR',
+            //         message: 'Số điện thoại đã được đăng ký!'
+            //     })
+            // }
             const hash = bcrypt.hashSync(password, 10)
             const createdUser = await User.create({
                 name,
                 email,
                 password: hash,
-                phone
+                phone,
+                address
             })
             if (createdUser) {
                 resolve({

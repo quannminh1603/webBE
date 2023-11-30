@@ -220,7 +220,7 @@ const EmailService = require("../services/EmailService")
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems,paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone,user, isPaid, paidAt,email } = newOrder
+        const { orderItems,paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, phone,user, isPaid, paidAt,email } = newOrder
         try {
             const promises = orderItems.map(async (order) => {
                 const productData = await Product.findOneAndUpdate(
@@ -265,14 +265,15 @@ const createOrder = (newOrder) => {
                     shippingAddress: {
                         fullName,
                         address,
-                        city, phone
+                        phone
                     },
                     paymentMethod,
                     itemsPrice,
                     shippingPrice,
                     totalPrice,
                     user: user,
-                    isPaid, paidAt
+                    isPaid,
+                    paidAt
                 })
                 if (createdOrder) {
                     await EmailService.sendEmailCreateOrder(email,orderItems)
@@ -420,10 +421,36 @@ const getAllOrder = () => {
     })
 }
 
+const updateOrder = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const checkOrder = await Order.findOne({
+                _id: order.product
+            })
+            if (checkOrder === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The order is not defined'
+                })
+            }
+
+            const updatedUser = await User.findByIdAndUpdate(id, data, { new: true })
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: updatedUser
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createOrder,
     getAllOrderDetails,
     getOrderDetails,
     cancelOrderDetails,
-    getAllOrder
+    getAllOrder,
+    updateOrder
 }

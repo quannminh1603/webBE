@@ -207,15 +207,15 @@ const createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
         const { name, image, type, countInStock, size, price, rating, description,discount } = newProduct
         try {
-            const checkProduct = await Product.findOne({
-                name: name
-            })
-            if (checkProduct !== null) {
-                resolve({
-                    status: 'ERR',
-                    message: 'The name of product is already'
-                })
-            }
+            // const checkProduct = await Product.findOne({
+            //     rating: rating
+            // })
+            // if (checkProduct !== '5') {
+            //     resolve({
+            //         status: 'ERR',
+            //         message: 'Rating phải là 5'
+            //     })
+            // }
             const newProduct = await Product.create({
                 name, 
                 image,
