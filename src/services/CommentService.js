@@ -82,7 +82,8 @@ const getCommentByProductId = (productId) => {
         try {
             const comments = await Comment
                 .find({product: productId})
-                .populate('user', 'hoTenKH')
+                .populate('user','name')
+                //sort by createdAt descending
                 .sort({createdAt: -1});
             resolve({
                 status: "OK",
