@@ -217,6 +217,7 @@
 const Order = require("../models/OrderProduct")
 const Product = require("../models/ProductModel")
 const EmailService = require("../services/EmailService")
+const moment = require('moment')
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
@@ -446,11 +447,51 @@ const updateOrder = (id, data) => {
     })
 }
 
+const getRevenueByWeek = (year, month) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const startOfMonth = moment(`${year}-${month}-01`).startOf('month');
+            const endOfMonth = moment(`${year}-${month}-01`).endOf('month');
+
+            const orders = await Order.aggregate([
+                {
+                    $match: {
+                        paidAt: { $gte: startOfMonth.toDate(), $lt: endOfMonth.toDate() },
+                    },
+                },
+                {
+                    $group: {
+                        _id: { week: { $isoWeek: '$paidAt' } },
+                        totalRevenue: { $sum: '$totalPrice' },
+                    },
+                },
+                {
+                    $sort: { '_id.week': 1 },
+                },
+            ]);
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: orders,
+            });
+        } catch (error) {
+            reject({
+                status: 'ERR',
+                message: 'Internal Server Error',
+                error: error.message,
+            });
+        }
+    });
+};
+
+
 module.exports = {
     createOrder,
     getAllOrderDetails,
     getOrderDetails,
     cancelOrderDetails,
     getAllOrder,
-    updateOrder
+    updateOrder,
+    getRevenueByWeek
 }

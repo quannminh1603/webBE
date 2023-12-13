@@ -210,11 +210,25 @@ const updateOrder = async (req, res) => {
     }
 }
 
+const getRevenueByWeek = async (req, res) => {
+    try {
+        const month = req.body.month;
+        const year = req.body.year;
+        const data = await OrderService.getRevenueByWeek(year, month);
+        return res.status(200).json(data)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 module.exports = {
     createOrder,
     getAllOrderDetails,
     getDetailsOrder,
     cancelOrderDetails,
     getAllOrder,
-    updateOrder
+    updateOrder,
+    getRevenueByWeek
 }

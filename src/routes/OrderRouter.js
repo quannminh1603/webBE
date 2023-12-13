@@ -22,6 +22,7 @@ router.get('/get-all-order/:id',authUserMiddleWare, OrderController.getAllOrderD
 router.get('/get-details-order/:id', OrderController.getDetailsOrder)
 router.delete('/cancel-order/:id',authUserMiddleWare, OrderController.cancelOrderDetails)
 router.get('/get-all-order',authMiddleWare, OrderController.getAllOrder)
+router.post('/getRevenueByWeek', OrderController.getRevenueByWeek)
 
 
 module.exports = router
