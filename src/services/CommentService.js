@@ -7,7 +7,9 @@ const createComment = (newComment) => {
             const newComment = await Comment.create({
                 content,
                 user,
-                product
+                product,
+                createAt: Date.now(),
+                updateAt: Date.now()
             });
             if (newComment) {
                 resolve({
@@ -83,7 +85,6 @@ const getCommentByProductId = (productId) => {
             const comments = await Comment
                 .find({product: productId})
                 .populate('user','name')
-                //sort by createdAt descending
                 .sort({createdAt: -1});
             resolve({
                 status: "OK",
