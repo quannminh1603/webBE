@@ -212,9 +212,9 @@ const updateOrder = async (req, res) => {
 
 const getRevenueByWeek = async (req, res) => {
     try {
-        const month = req.body.month;
-        const year = req.body.year;
-        const data = await OrderService.getRevenueByWeek(year, month);
+        const startDate = req.body.startDate;
+        const finishDate = req.body.finishDate;
+        const data = await OrderService.getRevenueByWeek(startDate, finishDate);
         return res.status(200).json(data)
     } catch (e) {
         return res.status(404).json({

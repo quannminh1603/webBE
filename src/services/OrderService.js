@@ -447,29 +447,20 @@ const updateOrder = (id, data) => {
     })
 }
 
-const getRevenueByWeek = (year, month) => {
+const getRevenueByWeek = (startDate, finishDate) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const startOfMonth = moment(`${year}-${month}-01`).startOf('month');
-            const endOfMonth = moment(`${year}-${month}-01`).endOf('month');
-
             const orders = await Order.aggregate([
                 {
                     $match: {
-                        paidAt: { $gte: startOfMonth.toDate(), $lt: endOfMonth.toDate() },
+                        paidAt: { $gte: new Date(startDate), $lt: new Date(finishDate) },
+                        isPaid: true,
                     },
                 },
                 {
-                    $group: {
-                        _id: { week: { $isoWeek: '$paidAt' } },
-                        totalRevenue: { $sum: '$totalPrice' },
-                    },
-                },
-                {
-                    $sort: { '_id.week': 1 },
+                    $sort: { '_id': 1 },
                 },
             ]);
-
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
@@ -484,6 +475,7 @@ const getRevenueByWeek = (year, month) => {
         }
     });
 };
+
 
 
 module.exports = {
